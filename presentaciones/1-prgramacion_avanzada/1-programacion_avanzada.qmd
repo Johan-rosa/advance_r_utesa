@@ -1,0 +1,215 @@
+---
+title: "R Avanzado"
+author: Johan Rosa
+format: revealjs
+---
+
+## Contenido
+
+1. Funciones personalizadas
+2. Programación funcional
+3. Manejo avanzado de datos con `{dplyr}` y `{tidyr}`
+4. Optimización de código
+5. Paralelización
+
+# Funciones y Funciones personalizadas {.smaller}
+
+---
+
+![](assets/function.png)
+
+::: notes
+Las funciones unidades útiles que encapsulan una lógica. Reciben inputs y en base a ellos, algunas veces, devuelven resultados.
+:::
+
+## ¿Por qué Funciones Personalizadas? {.smaller}
+
+- Reutilización de código
+- Mantenibilidad
+- Abstracción
+- Capacidad de probar
+
+::: {.callout-tip}
+### Principio DRY
+Don't Repeat Yourself - Si escribes el mismo código más de dos veces, probablemente necesitas una función.
+:::
+
+::: notes
+- **Reutilización de código:** Evita repetir el mismo código múltiples veces
+- **Mantenibilidad:** Cambios en un solo lugar se reflejan en todo el proyecto
+- **Legibilidad:** Código más limpio y expresivo
+- **Abstracción:** Oculta la complejidad detrás de una interfaz simple
+- **Testing:** Facilita las pruebas unitarias del código
+:::
+
+
+## Anatomía de una Función en R {.smaller}
+
+- **Nombre:** Descriptivo y en snake_case
+- **Argumentos:** Parámetros de entrada (con o sin valores por defecto)
+- **Cuerpo:** Lógica de la función entre llaves
+- **Retorno:** La última expresión o `return()` explícito
+
+```{r}
+#| echo: true
+nombre_funcion <- function(argumento1, argumento2 = valor_default) {
+  # Cuerpo de la función
+  resultado <- argumento1 + argumento2
+  
+  # Retorno (implícito o explícito)
+  return(resultado)
+}
+```
+
+
+## Ejemplos
+
+Área de un círculo
+
+```{r}
+#| eval: false
+#| echo: true
+
+area_circulo <- function(radio) {
+  pi * radio ^ 2
+}
+
+area_circulo(16) #> 804.24
+```
+
+Índice de masa corporal
+
+```{r}
+#| eval: false
+#| echo: true
+
+calcular_imc <- function(peso_kg, altura_m) {
+  peso_kg / (altura_m ^ 2)
+}
+
+calcular_imc(64, 1.6) #> 25
+
+```
+
+## Función avanzada {.smaller}
+
+```{r}
+#| eval: false
+#| echo: true
+
+# Con categorización
+clasificar_imc <- function(peso_kg, altura_m) {
+  imc <- calcular_imc(peso_kg, altura_m)
+
+  categoria <- dplyr::case_when(
+    imc < 18.5 ~ "Bajo peso",
+    imc < 25   ~ "Normal",
+    imc < 30   ~ "Sobrepeso",
+    TRUE       ~ "Obesidad"
+  )
+  
+  return(list(imc = round(imc, 2), categoria = categoria))
+}
+
+clasificar_imc(65, 1.75)
+# $imc
+# [1] 22.86
+# 
+# $categoria
+# [1] "Normal"
+```
+
+---
+
+### Ejercicio asistido
+
+Crear función que descargue la data del IPC
+
+## Los operadores son funciones primitivas
+
+`<-` `==` `+` `[` 
+
+```{r}
+#| echo: true
+#| eval: false
+
+`+`(2, 2) #> 4
+
+`<-`(x, 5)
+print(x) #> 5
+
+`==`(x, 4) #> FALSE
+```
+
+## `Scope` de una función
+
+¿Qué devolverá esta función, 10 o 20?
+
+```{r}
+#| eval: false
+#| echo: true
+
+x <- 10
+g01 <- function() {
+  x <- 20
+  x
+}
+
+g01()
+```
+
+- El operador `<<-`
+- Busqueda dinámica
+
+
+## Argumentos por defecto
+
+```{r}
+#| eval: false
+#| echo: true
+
+f1 <- function(x = 1, y = x * 2, z = a + b) {
+  a <- 10
+  b <- 100
+  
+  c(x, y, z)
+}
+
+f1() #> [1]   1   2 110
+```
+
+
+## Principios fundamentales
+
+- Errores y validación
+- `return` implícito
+- valores invisible
+- manejar salida o interrupción: `on.exit`
+- las funciones guardan el ambiente en el que fueron creadas
+- funciones glotonas con ...
+
+
+# Programación funcional
+
+----
+<br>
+<br>
+
+:::{.center-slide}
+Paradigma de programación que, usando `funciones`, busca generar código predecible, modular y facil de mantener.
+:::
+
+```{css}
+.center-slide {
+  text-align: center;
+  vertical-align: middle;
+}
+```
+
+## Funciones puras
+
+- No modifican el ambiente global
+- Son predecible
+
+
+# Manipular datos con  `{Dplyr}` y `{tidyr}`
