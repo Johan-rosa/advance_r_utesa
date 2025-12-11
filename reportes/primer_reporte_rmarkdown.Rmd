@@ -1,7 +1,17 @@
 ---
-title: "Introducción a R markdown"
-output: html_document
+title: "Introducción a R Markdown"
+output:
+  html_document:
+    toc: true
+    toc_float: true
 date: "2025-12-06"
+---
+
+## Introducción
+
+R Markdown permite combinar **texto**, **código** y **resultados** en un solo documento.  
+Es ideal para reportes, análisis reproducibles, tareas y documentación.
+
 ---
 
 ## Mi primer título 2
@@ -12,12 +22,10 @@ date: "2025-12-06"
 
 Este es un párrafo, no muy largo.
 
-
-#### Esta es unla lista ordenada
+#### Esta es una lista ordenada
 
 1. Natanael
 5. Julio
-
 
 #### Esta es una lista no ordenada
 
@@ -29,22 +37,116 @@ Este es un párrafo, no muy largo.
 
 _Esto es cursivo_
 
+---
 
-### Este es mi segundo título 3
+## Código en R
 
-## Mi segundo título 2
-
-### Otro título tres
+### Chunk básico
 
 ```{r}
 edades <- c(39, 33, 26, 223)
 hist(1:10)
 ```
 
+### Chunk sin mostrar código
+
 ```{r echo=FALSE}
 hist(rnorm(100))
 ```
 
+La edad promedio de nosotros es: `r mean(edades)`.
+
+---
+
+## Insertar imágenes
+
+Imagen desde URL:
+
 ![](https://r4ds.hadley.nz/data-visualize_files/figure-html/unnamed-chunk-6-1.png)
+
+Avatar de GitHub:
+
 ![](https://avatars.githubusercontent.com/u/17912233?v=4)
-La edad promedio de nosotros es `r mean(edades)`
+
+---
+
+## Tablas
+
+### Tabla simple en Markdown
+
+| Nombre   | Edad |
+|----------|------|
+| Johan    | 33   |
+| Pedro    | 40   |
+
+### Tabla generada con código
+
+```{r}
+library(knitr)
+tabla <- data.frame(
+  nombre = c("Ana", "Luis", "María"),
+  edad = c(22, 30, 28)
+)
+kable(tabla)
+```
+
+---
+
+## Comentarios útiles en chunks
+
+```{r, message=FALSE, warning=FALSE}
+# message=FALSE oculta mensajes de librerías
+# warning=FALSE oculta warnings
+summary(cars)
+```
+
+---
+
+## Insertar ecuaciones
+
+Ecuación en línea: $\alpha + \theta x$
+
+Ecuación centrada:
+
+$$
+f(x) = \frac{1}{\sqrt{2\pi}} e^{-x^2/2}
+$$
+
+---
+
+## Crear secciones colapsables
+
+<details>
+<summary><b>Haz clic para expandir</b></summary>
+
+Contenido oculto del tutorial.
+
+</details>
+
+---
+
+## Código en otros lenguajes
+
+### Python
+
+```{python}
+x = [1, 2, 3, 4]
+sum(x)
+```
+
+
+---
+
+## Inserción de citas
+
+> *“La simplicidad es la máxima sofisticación.”*  
+> — Leonardo da Vinci
+
+---
+
+## Recursos adicionales
+
+- **Guía completa:** <https://rmarkdown.rstudio.com>
+- **R for Data Science:** <https://r4ds.hadley.nz>
+- **Cheatsheet oficial:** <https://raw.githubusercontent.com/rstudio/cheatsheets/main/rmarkdown.pdf>
+
