@@ -1,0 +1,72 @@
+---
+title: "Manipulación de data con Dplyr y Tidyr"
+output: html_document
+date: "2025-12-06"
+---
+
+## Dependencias y paquetes
+
+```{r message=FALSE, warning=FALSE}
+# Ctrl + Alt + i # atajo para crear un fragmento
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# Deben instalar este paquete en caso que no lo tengan instalado
+# remotes::install_github("johan-rosa/databcrd")
+library(databcrd)
+```
+
+## Nivelación
+
+**Pipe** en R: `%>%`, `|>`. Permite paras un valor que está a la izquierda como primer argumento
+a una función que esté a la derecha
+
+```{r}
+nombre <- "Johan"
+say_hello <- function(name) paste("Hola", name)
+
+paste(toupper(say_hello(nombre)), "!")
+
+nombre |> say_hello() |> toupper() |> paste("!")
+```
+
+Evita tener que crear objetos intermedios
+
+```{r}
+nombre <- "natanael"
+saludo <- say_hello(nombre)
+salaudo_upper <- toupper(saludo)
+paste(salaudo_upper, "!")
+```
+
+
+
+## Tipo de cambio en República Dominicana
+
+Con la función `get_tc_spot()` podemos descargar la base de datos del tipo 
+de cambio del mercado en RD.
+
+```{r}
+data_tc <- get_tc_spot(frecuencia = "diaria")
+```
+
+Esta es la serie de tipo de cambio de los últimos siete días
+
+
+
+```{r}
+tc_diciembre <- data_tc |> 
+  filter(fecha >= "2025-12-01") 
+
+tc_diciembre |>
+  reactable::reactable()
+```
+
+```{r}
+tc_diciembre |>
+  ggplot(aes(x = dia, y = venta)) +
+  geom_line() +
+  labs(title = "Tasa de cambio de venta", subtitle = "Días de diciembre 2025")
+```
+

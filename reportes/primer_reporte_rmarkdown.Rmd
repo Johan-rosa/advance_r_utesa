@@ -1,0 +1,50 @@
+---
+title: "Introducción a R markdown"
+output: html_document
+date: "2025-12-06"
+---
+
+## Mi primer título 2
+### Mi primer título 3
+#### Mi primer título 4
+##### Mi primer título 5
+###### Mi primer título 6
+
+Este es un párrafo, no muy largo.
+
+
+#### Esta es unla lista ordenada
+
+1. Natanael
+5. Julio
+
+
+#### Esta es una lista no ordenada
+
+- UTESA
+- UASD
+- APEC
+
+**Esto es una negrita**
+
+_Esto es cursivo_
+
+
+### Este es mi segundo título 3
+
+## Mi segundo título 2
+
+### Otro título tres
+
+```{r}
+edades <- c(39, 33, 26, 223)
+hist(1:10)
+```
+
+```{r echo=FALSE}
+hist(rnorm(100))
+```
+
+![](https://r4ds.hadley.nz/data-visualize_files/figure-html/unnamed-chunk-6-1.png)
+![](https://avatars.githubusercontent.com/u/17912233?v=4)
+La edad promedio de nosotros es `r mean(edades)`

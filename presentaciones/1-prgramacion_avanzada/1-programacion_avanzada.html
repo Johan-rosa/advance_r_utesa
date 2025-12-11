@@ -209,7 +209,6 @@ Johan Rosa
 <li>Funciones personalizadas</li>
 <li>Programación funcional</li>
 <li>Manejo avanzado de datos con <code>{dplyr}</code> y <code>{tidyr}</code></li>
-<li>Optimización de código</li>
 <li>Paralelización</li>
 </ol>
 </section>
@@ -395,48 +394,7 @@ Johan Rosa
 <li>las funciones guardan el ambiente en el que fueron creadas</li>
 <li>funciones glotonas con …</li>
 </ul>
-</section>
-<section id="ejemplo-con-gapminder" class="slide level2">
-<h2>Ejemplo con <code>gapminder</code></h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="fu">library</span>(gapminder)</span>
-<span id="cb8-2"><a href=""></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb8-3"><a href=""></a></span>
-<span id="cb8-4"><a href=""></a>gapminder</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1,704 × 6
-   country     continent  year lifeExp      pop gdpPercap
-   &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
- 1 Afghanistan Asia       1952    28.8  8425333      779.
- 2 Afghanistan Asia       1957    30.3  9240934      821.
- 3 Afghanistan Asia       1962    32.0 10267083      853.
- 4 Afghanistan Asia       1967    34.0 11537966      836.
- 5 Afghanistan Asia       1972    36.1 13079460      740.
- 6 Afghanistan Asia       1977    38.4 14880372      786.
- 7 Afghanistan Asia       1982    39.9 12881816      978.
- 8 Afghanistan Asia       1987    40.8 13867957      852.
- 9 Afghanistan Asia       1992    41.7 16317921      649.
-10 Afghanistan Asia       1997    41.8 22227415      635.
-# ℹ 1,694 more rows</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a>gapminder <span class="sc">|&gt;</span></span>
-<span id="cb10-2"><a href=""></a>  <span class="fu">count</span>(continent)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 5 × 2
-  continent     n
-  &lt;fct&gt;     &lt;int&gt;
-1 Africa      624
-2 Americas    300
-3 Asia        396
-4 Europe      360
-5 Oceania      24</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a>gapminder <span class="sc">|&gt;</span></span>
-<span id="cb12-2"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> lifeExp, <span class="at">group =</span> country)) <span class="sc">+</span></span>
-<span id="cb12-3"><a href=""></a>  <span class="fu">geom_line</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="1-programacion_avanzada_files/figure-revealjs/unnamed-chunk-8-1.png" width="960" class="r-stretch"></section></section>
+</section></section>
 <section>
 <section id="programación-funcional" class="title-slide slide level1 center">
 <h1>Programación funcional</h1>
@@ -462,10 +420,53 @@ Johan Rosa
 <ul>
 <li>No modifican el ambiente global</li>
 <li>Son predecible</li>
+<li>Reciben como argumento todo lo que necesitan</li>
 </ul>
+</section>
+<section class="slide level2">
+
+<p><br> <br></p>
+<div class="center-slide">
+<p>No le teman a las listas. Todo usuario avanzado usa listas</p>
+</div>
 </section></section>
+<section>
 <section id="manipular-datos-con-dplyr-y-tidyr" class="title-slide slide level1 center">
 <h1>Manipular datos con <code>{Dplyr}</code> y <code>{tidyr}</code></h1>
+
+</section>
+<section id="verbos-principales" class="slide level2">
+<h2>Verbos principales</h2>
+<ul>
+<li><code>select()</code></li>
+<li><code>filter()</code></li>
+<li><code>mutate()</code></li>
+<li><code>summarise()</code></li>
+<li><code>group_by()</code></li>
+<li><code>across()</code></li>
+<li><code>rowwise()</code></li>
+<li><code>slice()</code></li>
+</ul>
+</section>
+<section id="programando-con-el-tidyverse" class="slide level2">
+<h2>Programando con el tidyverse</h2>
+</section></section>
+<section id="paralelización" class="title-slide slide level1 center">
+<h1>Paralelización</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="fu">library</span>(purrr)</span>
+<span id="cb8-2"><a href=""></a><span class="fu">library</span>(mirai)</span>
+<span id="cb8-3"><a href=""></a></span>
+<span id="cb8-4"><a href=""></a><span class="co"># Set up parallel processing (6 background processes)</span></span>
+<span id="cb8-5"><a href=""></a><span class="fu">daemons</span>(<span class="dv">6</span>)</span>
+<span id="cb8-6"><a href=""></a></span>
+<span id="cb8-7"><a href=""></a><span class="co"># Sequential version</span></span>
+<span id="cb8-8"><a href=""></a>mtcars <span class="sc">|&gt;</span> <span class="fu">map_dbl</span>(\(x) <span class="fu">mean</span>(x))</span>
+<span id="cb8-9"><a href=""></a></span>
+<span id="cb8-10"><a href=""></a>mtcars <span class="sc">|&gt;</span> <span class="fu">map_dbl</span>(<span class="fu">in_parallel</span>(\(x) <span class="fu">mean</span>(x)))</span>
+<span id="cb8-11"><a href=""></a></span>
+<span id="cb8-12"><a href=""></a><span class="fu">daemons</span>(<span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 
 </section>
     </div>

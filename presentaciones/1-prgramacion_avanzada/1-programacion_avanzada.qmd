@@ -9,8 +9,7 @@ format: revealjs
 1. Funciones personalizadas
 2. Programación funcional
 3. Manejo avanzado de datos con `{dplyr}` y `{tidyr}`
-4. Optimización de código
-5. Paralelización
+4. Paralelización
 
 # Funciones y Funciones personalizadas {.smaller}
 
@@ -191,7 +190,9 @@ f1() #> [1]   1   2 110
 
 # Programación funcional
 
+
 ----
+
 <br>
 <br>
 
@@ -210,6 +211,51 @@ Paradigma de programación que, usando `funciones`, busca generar código predec
 
 - No modifican el ambiente global
 - Son predecible
+- Reciben como argumento todo lo que necesitan
+
+----
+
+<br>
+<br>
+
+:::{.center-slide}
+No le teman a las listas. Todo usuario avanzado usa listas
+:::
+
 
 
 # Manipular datos con  `{Dplyr}` y `{tidyr}`
+
+## Verbos principales
+
+- `select()`
+- `filter()`
+- `mutate()`
+- `summarise()`
+- `group_by()`
+- `across()`
+- `rowwise()`
+- `slice()`
+
+## Programando con el tidyverse
+
+# Paralelización
+
+```{r}
+#| echo: true
+#| eval: false
+
+library(purrr)
+library(mirai)
+
+# Set up parallel processing (6 background processes)
+daemons(6)
+
+# Sequential version
+mtcars |> map_dbl(\(x) mean(x))
+
+mtcars |> map_dbl(in_parallel(\(x) mean(x)))
+
+daemons(0)
+```
+
