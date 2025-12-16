@@ -70,3 +70,111 @@ tc_diciembre |>
   labs(title = "Tasa de cambio de venta", subtitle = "Días de diciembre 2025")
 ```
 
+## Mutate
+
+```{r}
+library(dplyr)
+
+set.seed(20251213)
+
+alumnos <- tibble::tibble(
+  id   = 1:10,
+  name = c(
+    "Ramon", "Natanael", "Robert", "Luis", "Carlos", 
+    "Alicia", "Karina", "Maria", "Emilia", "Ana"
+  ),
+  sex  = c("M", "M", "M", "M", "M", "F", "F", "F", "F", "F"),
+  edad = sample(28:50, 10),
+  salario = sample(seq(33e3, 95e3, by = 1000), 10)
+)
+
+notas <- tibble::tibble(
+  id = 1:10,
+  parcial_1 = sample(70:100, 10),
+  parcial_2 = sample(70:100, 10),
+  practica = sample(70:100, 10),
+  participacion = sample(70:100, 10)
+)
+
+notas |>
+  mutate(
+    total = rowMeans(across(-id)),
+    lauro = case_when(
+      total >= 95 ~ "Summa Cumlaude",
+      total >= 90 ~ "Magna Cumlaude",
+      total >= 85 ~ "Cumlaude",
+      total >= 80 ~ "Aprobado",
+      TRUE ~ "Reprobado"
+    )
+  )
+
+alumnos %>%
+  mutate(
+    nombre_mayuscula = toupper(name),
+    salario_diario = salario / 23,
+    salario_anual = salario * 12
+  ) |>
+  relocate(nombre_mayuscula, .after = name) |>
+  rename(sexo = sex, nombre = name)
+
+mutate(alumnos, nombre_mayuscula = toupper(name))
+```
+
+# Filtrando con filter y slice
+
+```{r}
+alumnos |>
+  filter(sex == "M")
+
+alumnos |>
+  filter(sex == "F")
+
+
+notas |> slice(c(1, 3, 5))
+notas |> slice_max(order_by = parcial_1)
+notas |> slice_min(order_by = parcial_1)
+
+notas |> filter(parcial_1 == max(parcial_1))
+notas |> filter(parcial_1 == min(parcial_1))
+
+notas |> slice_tail(n = 3)
+```
+
+## Seleccionar columnas
+
+```{r}
+alumnos |> 
+  select(ID = id, nombre = name, sexo = sex)
+
+select_vars <- c("name", "sex", "signo")
+
+alumnos %>%
+  mutate(
+    salario_diario = salario / 23,
+    salario_anual = salario * 12
+  ) |>
+  select(id, all_of(select_vars))
+```
+
+## Resumenes con summary
+
+```{r}
+alumnos |>
+  mutate(
+    sector = sample(c("Comercio", "Servicios", "salud"), 10, replace = TRUE)
+  ) |> 
+  summarise(
+    salario_promedio = mean(salario),
+    salario_diario_promedio = mean(salario / 23),
+    salario_diario_anual = mean(salario * 12),
+    .by = c(sex, sector)
+  )
+```
+
+
+```{r}
+alumnos |>
+  left_join(notas)
+```
+
+

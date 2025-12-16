@@ -1,0 +1,68 @@
+---
+output: word_document
+params:
+  sheet: "Distrito Nacional"
+---
+
+# `r params$sheet`
+
+```{r echo=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
+```{r setup}
+library(dplyr)
+library(tidyr)
+library(readxl)
+library(purrr)
+library(stringr)
+library(ggplot2)
+
+leer_data_one <- function(ruta, hoja) {
+  read_excel(
+    ruta, 
+    sheet = hoja,
+    skip = 6
+  ) |>
+    rename(edad = 1) |>
+    mutate(
+      sexo = ifelse(
+        str_detect(edad, "Ambos|Hombres|Mujeres"), 
+        edad, 
+        NA
+      )
+    ) |>
+    fill(sexo) |> 
+    filter(
+      !str_detect(edad, "Fuente"),
+      str_detect(edad, "\\d"),
+      sexo != "Ambos sexos"
+    )  |>
+    suppressMessages()
+}
+```
+
+```{r leer_data}
+data_provincia <- leer_data_one(here::here("data/data_one.xlsx"), params$sheet)
+data_provincia_long <- data_provincia |>
+  pivot_longer(matches("\\d"), names_to = "year", values_to = "poblacion")
+
+data_pais <- leer_data_one(here::here("data/data_one.xlsx"), "Total País")
+data_pais_long <- data_pais |> 
+  pivot_longer(matches("\\d"), names_to = "year", values_to = "poblacion")
+
+total_2020 <- data_provincia |>
+  summarise(total = sum(`2020`))
+```
+
+En el 2020, la población total de `r params$hoja` era `r scales::comma(total_2020$total)` 
+
+```{r plot_poblacion}
+data_provincia_long |>
+  ggplot(aes(x = year, y = poblacion, fill = edad)) +
+  geom_col() +
+  facet_wrap(~sexo) +
+  theme_minimal() +
+  theme(legend.position = "non")
+```
+

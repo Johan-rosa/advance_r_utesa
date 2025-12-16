@@ -1,0 +1,273 @@
+---
+title: "Manipulación de datos con Dplyr"
+author: "Johan Rosa"
+format: revealjs
+---
+
+## Verbos / funciones principales
+
+:::: {.columns}
+
+::: {.column width="40%"}
+- `select()`
+- `filter()`
+- `mutate()`
+- `group_by()`
+- `summarise()`
+:::
+
+::: {.column width="60%"}
+- `slice()`
+- `across()`
+- `rowwise()`
+- `*_join()` 
+:::
+
+::::
+
+## La data {.smaller}
+
+Data frame sintético con datos de los estudiates y sus notas.
+
+:::: {.columns}
+
+::: {.column width="60%"}
+```{r}
+#| echo: true
+
+library(dplyr)
+
+set.seed(20251213)
+
+alumnos <- tibble::tibble(
+  id   = 1:10,
+  name = c(
+    "Ramon", "Natanael", "Robert", "Luis", "Carlos", 
+    "Alicia", "Karina", "Maria", "Emilia", "Ana"
+  ),
+  sex  = c("M", "M", "M", "M", "M", "F", "F", "F", "F", "F"),
+  edad = sample(28:50, 10),
+  salario = sample(seq(33e3, 95e3, by = 1000), 10)
+)
+
+```
+
+<br>
+
+```{r}
+#| echo: true
+
+
+notas <- tibble::tibble(
+  id = 1:10,
+  parcial_1 = sample(70:100, 10),
+  parcial_2 = sample(70:100, 10),
+  practica = sample(70:100, 10),
+  participacion = sample(70:100, 10)
+)
+```
+:::
+
+::: {.column width="40%"}
+```{r}
+alumnos
+```
+
+<br>
+
+```{r}
+head(notas)
+```
+
+:::
+:::
+
+## Agregar columnas con `mutate()` {.smaller}
+
+::: {.columns}
+::: {.column width="40%"}
+
+```{r}
+#| echo: true
+
+notas <- notas |>
+  mutate(
+    total = rowMeans(across(-id)),
+    lauro = case_when(
+      total >= 95 ~ "Summa Cumlaude",
+      total >= 90 ~ "Magna Cumlaude",
+      total >= 85 ~ "Cumlaude",
+      total >= 80 ~ "Aprobado",
+      TRUE ~ "Reprobado"
+    )
+  )
+```
+:::
+
+::: {.column width="60%"}
+```{r}
+notas
+```
+:::
+:::
+
+**Práctica:** 
+
+1. Calcular el salario diario y el anual
+2. Clasificar los alumnos en tres sectores: "Comercio", "Servicio" y "Industria"
+
+
+## Filtros con `filter()`
+
+```{r}
+#| echo: true
+#| eval: false
+
+# Filtrar solo los hombres
+alumnos |>
+  filter(sex == "M")
+
+# Cuáles ganan más de 90,000 pesos?
+alumnos |>
+  filter(salario >= 90e3)
+
+# Mujeres que ganan menos de 60,000?
+alumnos |>
+  filter(sex == "F", salario < 60e3)
+```
+
+## Seleccionar columnas con `select()`
+
+```{r}
+#| echo: true
+#| eval: false
+
+
+# Seleccionar el id y el salario
+alumnos |> select(id, salario)
+
+# Seleccionar el id y aquellas columnas cuyo nombre inicie con "parcial"
+notas |> select(id, starts_with("parcial"))
+
+alumnos |> relocate(salario, .after = sex)
+```
+
+<br>
+
+Helpers: 
+
+- `ends_with()`
+- `contains()`
+- `all_of()` 
+- `any_of()`
+
+## Summarise
+
+```{r}
+#| echo: true
+
+
+alumnos |>
+  summarise(
+    salario_promedio = mean(salario),
+    cantidad = n(),
+    .by = sex
+  )
+```
+
+
+## Joins
+
+::: {.columns}
+::: {.column width="60%"}
+![](https://r4ds.hadley.nz/diagrams/join/setup.png){width=500px}
+:::
+
+::: {.column width="40%"}
+<br>
+![](https://r4ds.hadley.nz/diagrams/join/venn.png){width=500px}
+:::
+:::
+
+
+
+
+
+
+## Joins
+  
+::: {.columns}
+::: {.column width="50%"}
+![](https://r4ds.hadley.nz/diagrams/join/left.png){width=400px}
+![](https://r4ds.hadley.nz/diagrams/join/right.png){width=400px}
+
+:::
+
+::: {.column width="50%"}
+![](https://r4ds.hadley.nz/diagrams/join/full.png){width=400px}
+![](https://r4ds.hadley.nz/diagrams/join/inner.png){width=400px}
+:::
+:::
+
+## Joins
+  
+::: {.columns}
+::: {.column width="50%"}
+![](https://r4ds.hadley.nz/diagrams/join/semi.png){width=400px}
+:::
+
+::: {.column width="50%"}
+![](https://r4ds.hadley.nz/diagrams/join/anti.png){width=400px}
+:::
+:::
+
+
+## Joins
+
+```{r}
+#| echo: true
+
+alumnos |>
+  slice(1:5) |> 
+  left_join(
+     select(notas, id, lauro)
+  )
+```
+
+
+## Across
+
+## Otras funciones del `{dplyr}`
+
+
+::: {.columns}
+::: {.column width="50%"}
+
+- `last()`
+- `first()`
+- `lag()`
+- `lead()`
+- `rename()`
+
+:::
+
+::: {.column width="50%"}
+- `rename_with()`
+- `pull()`
+- `arrange()`
+- `recode()`
+- `coalesce()`
+:::
+:::
+
+<!------------------ --------------->
+
+::: {.columns}
+::: {.column width="40%"}
+
+:::
+
+::: {.column width="60%"}
+
+:::
+:::
